@@ -8,9 +8,12 @@
   - name: Install certbot
     community.general.snap:
       name: certbot
+      clasic: true
       state: present
   
   - name: Install certbot-dns-cloudflare
     community.general.snap:
       name: certbot-dns-cloudflare
+      dangerous: true
+      clasic: true
       state: present
