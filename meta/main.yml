@@ -1,0 +1,21 @@
+---
+dependencies: []
+    
+galaxy_info:
+  role_name: certbot
+  author: javik
+  description: Certbot for Linux
+  license: "MIT"
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - ssl
+    - tls
+    - letsencrypt
+    - certbot
+    - certificates
+
+allow_duplicates: true
