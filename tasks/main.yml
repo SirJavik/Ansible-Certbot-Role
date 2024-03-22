@@ -12,8 +12,9 @@
       state: present
 
   - name: Trust plugins with root
-    ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
+    ansible.builtin.command: snap set certbot trust-plugin-with-root=ok && echo "ok" > /tmp/certbot_trust_plugin_with_root
     when: certbot_dns_plugins | length > 0
+    creates: /tmp/certbot_trust_plugin_with_root
   
   - name: Install certbot-dns-plugins
     community.general.snap:
