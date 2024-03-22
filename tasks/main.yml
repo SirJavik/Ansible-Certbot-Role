@@ -23,3 +23,9 @@
     loop: "{{ certbot_dns_plugins }}"
     when: certbot_dns_plugins | length > 0
 
+  - name: Register Let's Encrypt Account via certbot
+    ansible.builtin.command:
+      cmd: "certbot register --email {{ certbot_email }} --agree-tos --no-eff-email"
+      creates: "/etc/letsencrypt/accounts"
+    when: certbot_email is defined
+
