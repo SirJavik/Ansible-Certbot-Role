@@ -13,8 +13,7 @@
 
   - name: Trust plugins with root
     ansible.builtin.command:
-      cmd: "snap set certbot trust-plugin-with-root=ok ; echo 'ok' > /tmp/certbot_trust_plugin_with_root"
-      creates: /tmp/certbot_trust_plugin_with_root
+      cmd: "snap set certbot trust-plugin-with-root=ok"
     when: certbot_dns_plugins | length > 0
   
   - name: Install certbot-dns-plugins
