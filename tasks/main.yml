@@ -1,4 +1,16 @@
 ---
-- ansible.builtin.debug:
-        msg: "Placeholder letsencrypt role."
-        
+  - name: Install snapd
+    ansible.builtin.apt:
+      name: snapd
+      state: present
+
+  - name: Install certbot
+    community.general.snap:
+      name: certbot
+      state: latest
+  
+  - name: Install certbot-dns-cloudflare
+    community.general.snap:
+      name: certbot-dns-cloudflare
+      state: latest
+      
