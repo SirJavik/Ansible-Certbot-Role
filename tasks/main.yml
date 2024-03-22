@@ -10,10 +10,17 @@
       name: certbot
       classic: true
       state: present
+
+  - name: Trust plugins with root
+    ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
+    when: cerbot_dns_plugins | length > 0
   
-  - name: Install certbot-dns-cloudflare
+  - name: Install certbot-dns-{{ item }} plugin
     community.general.snap:
-      name: certbot-dns-cloudflare
+      name: certbot-dns-{{ item }}
       dangerous: true
       classic: true
       state: present
+    loop: "{{ cerbot_dns_plugins }}"
+    when: cerbot_dns_plugins | length > 0
+
