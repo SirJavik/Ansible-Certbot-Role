@@ -3,14 +3,14 @@
     ansible.builtin.apt:
       name: snapd
       state: present
+      update_cache: true
 
   - name: Install certbot
     community.general.snap:
       name: certbot
-      state: latest
+      state: present
   
   - name: Install certbot-dns-cloudflare
     community.general.snap:
       name: certbot-dns-cloudflare
-      state: latest
-      
+      state: present
