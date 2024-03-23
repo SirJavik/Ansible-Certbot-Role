@@ -1,31 +1,15 @@
 ---
-  - name: Install snapd
-    ansible.builtin.apt:
-      name: snapd
-      state: present
-      update_cache: true
+- import_tasks: include-vars.yml
 
-  - name: Install certbot
-    community.general.snap:
-      name: certbot
-      classic: true
-      state: present
+- ansible.builtin.import_tasks: install-with-snapd.yml
 
-  - name: Trust plugins with root
-    ansible.builtin.command:
-      cmd: "snap set certbot trust-plugin-with-root=ok"
-    when: certbot_dns_plugins | length > 0
-  
-  - name: Install certbot-dns-plugins
-    community.general.snap:
-      name: certbot-dns-{{ item }}
-      state: present
-    loop: "{{ certbot_dns_plugins }}"
-    when: certbot_dns_plugins | length > 0
+- ansible.builtin.import_tasks: register-account.yml
+  when: certbot_register_account
 
-  - name: Register Let's Encrypt Account via certbot
-    ansible.builtin.command:
-      cmd: "/snap/bin/certbot register --email {{ certbot_email }} --agree-tos --no-eff-email"
-      creates: "/etc/letsencrypt/accounts"
-    when: certbot_email is defined
-
+- ansible.builtin.include_tasks: order-certificate-dns.yml
+  loop: "{{ certbot_certifactes }}"
+  when:
+    - certbot_create_if_missing
+    - cert_item.mode == 'dns'
+  loop_control:
+    loop_var: cert_item

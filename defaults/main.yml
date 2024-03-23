@@ -1,1 +1,16 @@
+certbot_register_account: true
+certbot_create_if_missing: true
+
+certbot_email:
+
 certbot_dns_plugins: []
+#  - cloudflare
+
+certbot_certificates: []
+#  - domains:
+#    - example.com
+#    - www.example.com
+#    mode: dns
+#    email: certs@example.com
+#    dns_plugin: cloudflare
+

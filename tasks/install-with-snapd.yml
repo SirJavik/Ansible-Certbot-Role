@@ -1,0 +1,48 @@
+---
+- name: Ensure snapd is installed
+  ansible.builtin.apt:
+    name: snapd
+    state: present
+    update_cache: true
+
+- name: Ensure snapd is enabled
+  ansible.builtin.systemd:
+    name: snapd.socket
+    enabled: true
+    state: started
+
+- name: Ensure snapd is installed and 'trust-plugin-with-root=ok' is set
+  community.general.snap:
+    name: certbot
+    classic: true
+    state: present
+    options:
+      - trust-plugin-with-root=ok
+
+- name: Install certbot-dns-plugins
+  community.general.snap:
+    name: certbot-dns-{{ item }}
+    state: present
+  loop: "{{ certbot_dns_plugins }}"
+  when: certbot_dns_plugins | length > 0
+
+- name: Symlink certbot into place
+  file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
+
+- name: Set Certbot script variable.
+  set_fact:
+    certbot_script: /usr/bin/certbot
+
+- name: Ensure pre and post hook folders exist
+  file:
+    path: /etc/letsencrypt/renewal-hooks/{{ item }}
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  loop:
+    - pre
+    - post
