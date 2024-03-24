@@ -1,0 +1,6 @@
+---
+- name: Check if {{ cert_item.domains | first | replace('*.', '') }} certificate already exists
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+  

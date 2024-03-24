@@ -6,10 +6,20 @@
 - ansible.builtin.import_tasks: register-account.yml
   when: certbot_register_account
 
-- ansible.builtin.include_tasks: order-certificate-dns.yml
+- name: Include DNS certificate order tasks
+  ansible.builtin.include_tasks: order-certificate-dns.yml
   loop: "{{ certbot_certifactes }}"
   when:
     - certbot_create_if_missing
     - cert_item.mode == 'dns'
+  loop_control:
+    loop_var: cert_item
+
+- name: Include standalone certificate order tasks
+  ansible.builtin.include_tasks: order-certificate-standalone.yml
+  loop: "{{ certbot_certifactes }}"
+  when:
+    - certbot_create_if_missing
+    - cert_item.mode == 'standalone'
   loop_control:
     loop_var: cert_item

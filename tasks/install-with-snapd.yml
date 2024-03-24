@@ -27,17 +27,17 @@
   when: certbot_dns_plugins | length > 0
 
 - name: Symlink certbot into place
-  file:
+  ansible.builtin.file:
     src: /snap/bin/certbot
     dest: /usr/bin/certbot
     state: link
 
 - name: Set Certbot script variable.
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_script: /usr/bin/certbot
 
 - name: Ensure pre and post hook folders exist
-  file:
+  ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/{{ item }}
     state: directory
     mode: 0755
@@ -46,3 +46,31 @@
   loop:
     - pre
     - post
+
+- name: Create post hook to restart services
+  template:
+    src: ./templates/restart_services.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/post/restart_services.sh
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - certbot_restart_services is defined
+    - certbot_restart_services
+
+- name: Ensure /etc/letsencrypt/secrets exists
+  ansible.builtin.file:
+    path: /etc/letsencrypt/secrets
+    state: directory
+    mode: 0700
+    owner: root
+    group: root
+
+- name: Create dns secrets credentials files
+  ansible.builtin.template:
+    src: dns_secrets.ini.j2
+    dest: /etc/letsencrypt/secrets/dns-{{ item }}.ini
+    owner: root
+    group: root
+    mode: 0600
+  loop: "{{ certbot_dns_plugins }}"

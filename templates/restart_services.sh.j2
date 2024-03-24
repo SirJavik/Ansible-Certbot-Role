@@ -3,15 +3,15 @@
 ##### MANAGED BY ANSIBLE ({{ ansible_role_name }})
 ####################################
 
-{% for item in certbot_create_standalone_stop_services %}
-echo "stopping service {{ item }}"
+{% for item in certbot_restart_services %}
+echo "Restarting service {{ item }}"
 {% if ansible_service_mgr == 'systemd' %}
-systemctl stop {{ item }}
+systemctl restart {{ item }}
 {% elif ansible_service_mgr == 'upstart' %}
-initctl stop {{ item }}
+initctl restart {{ item }}
 {% elif ansible_service_mgr == 'openrc' %}
-rc-service {{ item }} stop
+rc-service {{ item }} restart
 {% else %}
-service {{ item }} stop
+service {{ item }} restart
 {% endif %}
 {% endfor %}

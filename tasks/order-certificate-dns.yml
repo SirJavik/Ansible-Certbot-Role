@@ -1,7 +1,23 @@
 ---
-- name: Check if certificate already exists.
-  stat:
+- name: Check if {{ cert_item.domains | first | replace('*.', '') }} certificate already exists
+  ansible.builtin.stat:
     path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
   register: letsencrypt_cert
 
-
+- name: Generate new certificate if {{ cert_item.domains | first | replace('*.', '') }} doesn't exist
+  ansible.builtin.command:
+    cmd: >
+      certbot certonly
+      --non-interactive
+      --agree-tos
+      --email {{ cert_item.email | default(certbot_email) }}
+      --dns-{{ cert_item.dns_plugin }}
+      {% if cert_item.dns_plugin == 'cloudflare' %}
+      --dns-cloudflare-credentials /etc/letsencrypt/secrets/dns-cloudflare.ini
+      --dns-cloudflare-propagation-seconds 60 
+      {% endif %}
+      {% for domain in cert_item.domains %}
+      -d {{ domain }}
+      {% endfor %}
+    creates: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  when: not letsencrypt_cert.stat.exists

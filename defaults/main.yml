@@ -6,6 +6,12 @@ certbot_email:
 certbot_dns_plugins: []
 #  - cloudflare
 
+certbot_restart_services: []
+#  - apache2
+
+certbot_dns_cloudflare_email:
+certbot_dns_cloudflare_api_token:
+
 certbot_certificates: []
 #  - domains:
 #    - example.com
