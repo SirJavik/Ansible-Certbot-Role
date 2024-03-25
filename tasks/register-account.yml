@@ -1,5 +1,0 @@
----
-  - name: Register Let's Encrypt Account via certbot
-    ansible.builtin.command:
-      cmd: "{{ certbot_script }} register --email {{ certbot_email }} --agree-tos --no-eff-email  --noninteractive"
-      creates: "/etc/letsencrypt/accounts"

@@ -3,9 +3,6 @@
 
 - ansible.builtin.import_tasks: install-with-snapd.yml
 
-- ansible.builtin.import_tasks: register-account.yml
-  when: certbot_register_account
-
 - name: Include DNS certificate order tasks
   ansible.builtin.include_tasks: order-certificate-dns.yml
   loop: "{{ certbot_certifactes }}"
@@ -23,3 +20,7 @@
     - cert_item.mode == 'standalone'
   loop_control:
     loop_var: cert_item
+
+- name: Include systemd timer creation tasks
+  ansible.builtin.include_tasks: create-timer.yml
+  when: ansible_service_mgr == 'systemd'

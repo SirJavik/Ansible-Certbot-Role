@@ -1,0 +1,12 @@
+####################################
+##### MANAGED BY ANSIBLE ({{ ansible_role_name }})
+####################################
+[Unit]
+Description=Renew Certbot Certificates
+
+[Timer]
+Unit=renew-cert.service
+OnCalendar=*-*-* 00,12:00:00
+
+[Install]
+WantedBy=multi-user.target
